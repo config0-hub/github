@@ -1,0 +1,141 @@
+#!/usr/bin/env python
+#
+
+import os
+import sys
+#import subprocess
+
+from jiffycommon.loggerly import get_method_logger   
+from jiffycommon.shellouts import run_cmds
+from jiffycommon.shellouts import run_cmd
+from jiffycommon.shellouts import rm_rf
+from jiffycommon.shellouts import execute_return_exit
+
+def create_git_ssh_wrapper(filename="/tmp/git_ssh"):
+
+    '''
+    creates a temporary ssh wrapper script for using 
+    ssh -i <private_key> to execute git 
+    commands
+    '''
+
+    logger = get_method_logger("create_git_ssh_wrapper")
+
+    if os.path.exists(filename):
+        logger.debug("ssh wrapper {} already exists".format(filename))
+        return filename
+
+    file_content = '''
+#!/bin/bash
+
+trap 'rm -f /tmp/.git_ssh.$$' 0
+
+if [ "$1" = "-i" ]; then
+    SSH_KEY=$2; shift; shift
+    echo "GIT_TERMINAL_PROMPT=0 ssh -i $SSH_KEY -o StrictHostKeyChecking=no -oBatchMode=yes \$@" > /tmp/.git_ssh.$$
+    chmod +x /tmp/.git_ssh.$$
+    export GIT_SSH=/tmp/.git_ssh.$$
+fi
+
+[ "$1" = "git" ] && shift
+
+# Run the git command
+git "$@"
+'''
+    config_run = open(filename,'w')
+    config_run.write(file_content)
+    config_run.close()
+    os.system("chmod 755 %s" % filename)
+
+    return filename
+
+def git_clone_repo(**kwargs):
+
+    '''
+    does a simple clone if repo doesn't exists 
+    or does a pull if does exists
+    '''
+
+    logger = get_method_logger("git_clone_repo")
+
+    repo_dir = kwargs["repo_dir"]
+    git_url = kwargs.get("git_url")
+    prv_key_loc = kwargs.get("prv_key_loc")
+    commit = kwargs.get("commit")
+    base_cmd = None
+
+    branch = kwargs.get("branch")
+
+    if not branch: 
+        branch = "main"
+
+    if prv_key_loc:
+        wrapper_script = create_git_ssh_wrapper()
+        base_cmd = "{} -i {}".format(wrapper_script,prv_key_loc)
+
+    cmds = []
+
+    ##################################################
+    #No need to clone if the repo exists
+    ##################################################
+    cmd="cd {} && git status > /dev/null 2>&1".format(repo_dir)
+    if os.path.exists(repo_dir) and int(execute_return_exit(cmd)) != 0: 
+        logger.warn("directory {} exists, but it is not a git repo.  Deleting ...".format(repo_dir))
+        rm_rf(repo_dir)
+
+    if os.path.exists(repo_dir):
+
+        #Get on a branch just in case - detached HEAD doesn't behave well
+        cmd = "cd {} && git stash && git checkout {}".format(repo_dir,branch)
+        run_cmd(cmd,exit_error=False)
+
+        if commit: 
+            add_cmd = "git pull"
+        elif branch: 
+            add_cmd = "git pull origin {}".format(branch)
+        else:
+            logger.warn("you need either a commit or branch to clone/update %s" % (repo_dir))
+            return False
+
+        if base_cmd: 
+            cmds.append("cd {} && {} {}".format(repo_dir,base_cmd,add_cmd))
+        else:
+            cmds.append("cd {} && {}".format(repo_dir,add_cmd))
+
+    else:
+
+        if not git_url:
+            logger.warn("git_url not given, not cloning %s" % (repo_dir))
+            return False
+
+        add_cmd = "git clone -b {} {} {}".format(branch,git_url,repo_dir)
+
+        if base_cmd: 
+            cmds.append("{} {}".format(base_cmd,add_cmd))
+        else:
+            cmds.append(add_cmd)
+    
+    if commit: 
+        #Get on a branch just in case - detached HEAD doesn't behave well
+        cmds.append("cd {} && git stash && git checkout {}".format(repo_dir,branch))
+
+        add_cmd = "git checkout {}".format(commit)
+        cmds.append("cd {} && {}".format(repo_dir,add_cmd))
+
+    run_cmds(cmds)
+
+    return True
+
+if __name__ == '__main__':
+
+    if len(sys.argv) != 3: 
+        print("Need three arguments: prv_key_loc, git_url, repo_dir")
+        exit(34)
+
+    prv_key_loc = sys.argv[0]
+    git_url = sys.argv[1]
+    repo_dir = sys.argv[2]
+
+    git_clone_repo(prv_key_loc=prv_key_loc,
+                   git_url=git_url,
+                   repo_dir=repo_dir)

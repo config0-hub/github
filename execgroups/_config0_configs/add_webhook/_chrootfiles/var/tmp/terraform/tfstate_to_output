@@ -1,0 +1,54 @@
+#!/usr/bin/env python
+
+import os
+import json
+from config0_publisher.resource_manage import to_jsonfile
+from config0_publisher.utilities import print_json
+from config0_publisher.serialization import b64_encode
+
+terraform_state_file = os.environ.get("TERRAFORM_STATE_FILE","terraform.tfstate")
+
+with open(terraform_state_file) as json_file:
+    data = json.load(json_file)
+
+if not data:
+    print("ERROR - there is no data from {}".format(os.path.join(os.getcwd(),terraform_state_file)))
+    exit(9)
+
+_id = data["resources"][0]["instances"][0]["attributes"]["id"]
+
+results = {}
+results["resource_type"] = "repo_webhook"
+results["provider"] = "github"
+results["main"] = True
+
+# changed 45234532 - moved over to b64 hash
+#results["raw"] = {"terraform":data}
+results["raw"] = {"terraform":b64_encode(data)}
+
+results["id"] = data["resources"][0]["instances"][0]["attributes"]["id"]
+results["etag"] = data["resources"][0]["instances"][0]["attributes"]["etag"]
+results["repository"] = data["resources"][0]["instances"][0]["attributes"]["repository"]
+results["url"] = data["resources"][0]["instances"][0]["attributes"]["configuration"][0]["url"]
+results["secret"] = data["resources"][0]["instances"][0]["attributes"]["configuration"][0]["secret"]
+results["_id"] = _id
+results["tags"] = [ _id,
+                    "repo_webhook" ]
+
+try:
+    if len(data["resources"][0]["instances"][0]["attributes"]["events"]) == 1: 
+        results["events"] = data["resources"][0]["instances"][0]["attributes"]["events"][0]
+    else:
+        results["events"] = ", ".join([event for event in data["resources"][0]["instances"][0]["attributes"]["events"]])
+except:
+    results["events"] = data["resources"][0]["instances"][0]["attributes"]["events"]
+
+if os.environ.get("WEBHOOK_NAME"):
+    results["name"] = os.environ["WEBHOOK_NAME"]
+else:
+    results["name"] = _id
+
+# ref 34532045732
+to_jsonfile(results,"repo_webhook.json")
+
+#print_json(results)

@@ -1,0 +1,45 @@
+#!/usr/bin/env python
+
+import os
+import json
+from config0_publisher.resource_manage import to_jsonfile
+from config0_publisher.serialization import b64_encode
+
+#from config0_publisher.utilities import print_json
+
+terraform_state_file = os.environ.get("TERRAFORM_STATE_FILE","terraform.tfstate")
+
+with open(terraform_state_file) as json_file:
+    data = json.load(json_file)
+
+if not data:
+    print("ERROR - there is no data from {}".format(os.path.join(os.getcwd(),terraform_state_file)))
+    exit(9)
+
+# we have used key_name for title to make it consistent with ssh keys in general
+key_name = data["resources"][0]["instances"][0]["attributes"]["title"]
+
+results = {"name":key_name}
+results["resource_type"] = "repo_deploy_key"
+results["provider"] = "github"
+results["main"] = True
+
+# changed 45234532 - moved over to b64 hash
+#results["raw"] = {"terraform":data}
+results["raw"] = {"terraform":b64_encode(data)}
+
+results["id"] = data["resources"][0]["instances"][0]["attributes"]["id"]
+results["etag"] = data["resources"][0]["instances"][0]["attributes"]["etag"]
+results["read_only"] = data["resources"][0]["instances"][0]["attributes"]["read_only"]
+results["repository"] = data["resources"][0]["instances"][0]["attributes"]["repository"]
+results["title"] = key_name
+results["key_name"] = key_name
+results["_id"] = results["id"]
+
+results["tags"] = [ key_name,
+                    "repo_public_key" ]
+
+# ref 34532045732
+to_jsonfile(results,"repo_public_key.json")
+
+#print_json(results)

@@ -1,0 +1,42 @@
+
+  "version": 4,
+  "terraform_version": "0.14.6",
+  "serial": 1,
+  "lineage": "72a80ad6-bb57-c841-4e67-f21684b53e14",
+  "outputs": {},
+  "resources": [
+    {
+      "mode": "managed",
+      "type": "github_repository_webhook",
+      "name": "default",
+      "provider": "provider[\"registry.terraform.io/hashicorp/github\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "active": true,
+            "configuration": [
+              {
+                "content_type": "json",
+                "insecure_ssl": true,
+                "secret": "secret123",
+                "url": "https://google.de/"
+              }
+            ],
+            "etag": null,
+            "events": [
+              "pull_request",
+              "push"
+            ],
+            "id": "347941404",
+            "name": null,
+            "repository": "config0-private-test",
+            "url": "https://api.github.com/repos/williaumwu/config0-private-test/hooks/347941404"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ=="
+        }
+      ]
+    }
+  ]
+}

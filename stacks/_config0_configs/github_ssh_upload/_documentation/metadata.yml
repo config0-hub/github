@@ -1,0 +1,13 @@
+desc: The stack uploads ssh public key to github.
+release: 0.0.1
+categories: 
+   - github
+   - ssh_key
+   - repository
+   - code_repo
+tags:
+   - ssh_key
+   - ssh_public_key
+   - public_key
+   - host
+   - github

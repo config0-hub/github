@@ -1,0 +1,11 @@
+desc: The creates a webhook to designated url on github.
+release: 0.0.1
+categories: 
+   - github
+   - webhook
+   - repository
+   - code_repo
+tags:
+   - webhook
+   - host
+   - github
