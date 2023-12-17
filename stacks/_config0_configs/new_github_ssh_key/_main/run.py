@@ -41,8 +41,8 @@ def run(stackargs):
                              default="null")
 
     # declare execution groups
-    stack.add_substack("config0-hub:::new_ssh_key")
-    stack.add_substack("config0-hub:::github_ssh_upload")
+    stack.add_substack("config0-publish:::new_ssh_key")
+    stack.add_substack("config0-publish:::github_ssh_upload")
 
     # Initialize Variables in stack
     stack.init_variables()

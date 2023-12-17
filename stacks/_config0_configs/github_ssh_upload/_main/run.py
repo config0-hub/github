@@ -50,11 +50,11 @@ def run(stackargs):
                              default="null")
 
     # Add execgroup
-    stack.add_execgroup("config0-hub:::github::ssh_key_upload",
+    stack.add_execgroup("config0-publish:::github::ssh_key_upload",
                         "tf_execgroup")
 
     # Add substack
-    stack.add_substack('config0-hub:::tf_executor')
+    stack.add_substack('config0-publish:::tf_executor')
 
     # Initialize Variables in stack
     stack.init_variables()

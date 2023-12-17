@@ -25,7 +25,7 @@
 ```
 infrastructure:
    ssh_upload:
-       stack_name: config0-hub:::github_webhook
+       stack_name: config0-publish:::github_webhook
        arguments:
           name: config0-private-test-webhook
           repo: config0-private-test

@@ -28,7 +28,7 @@
 ```
 infrastructure:
    ssh_upload:
-       stack_name: config0-hub:::github_ssh_upload
+       stack_name: config0-publish:::github_ssh_upload
        arguments:
           key_name: config0-test-github-key
           repo: config0-private-test
