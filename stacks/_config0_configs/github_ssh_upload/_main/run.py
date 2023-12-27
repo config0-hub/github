@@ -3,16 +3,15 @@ from config0_publisher.terraform import TFConstructor
 
 def _get_ssh_public_key(stack):
 
-    _lookup = {"must_be_one": True}
-    _lookup["resource_type"] = "ssh_key_pair"
-    _lookup["provider"] = "config0"
-    _lookup["name"] = stack.key_name
+    _lookup = {"must_be_one": True,
+               "resource_type": "ssh_key_pair",
+               "provider": "config0",
+               "name": stack.key_name}
 
     results = stack.get_resource(decrypt=True, 
                                  **_lookup)[0]
 
     return stack.b64_encode(results["public_key"])
-
 
 def run(stackargs):
 
@@ -50,11 +49,11 @@ def run(stackargs):
                              default="null")
 
     # Add execgroup
-    stack.add_execgroup("config0-publish:::github::ssh_key_upload",
+    stack.add_execgroup("config0-hub:::github::ssh_key_upload",
                         "tf_execgroup")
 
     # Add substack
-    stack.add_substack('config0-publish:::tf_executor')
+    stack.add_substack("config0-hub:::tf_executor")
 
     # Initialize Variables in stack
     stack.init_variables()
@@ -128,19 +127,6 @@ def run(stackargs):
         raise Exception("cannot retrieve github_token from inputargs")
 
     ssm_obj = { "GITHUB_TOKEN": stack.github_token }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     # use the terraform constructor (helper)
     # but this is optional

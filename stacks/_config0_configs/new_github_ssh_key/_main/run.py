@@ -41,8 +41,8 @@ def run(stackargs):
                              default="null")
 
     # declare execution groups
-    stack.add_substack("config0-publish:::new_ssh_key")
-    stack.add_substack("config0-publish:::github_ssh_upload")
+    stack.add_substack("config0-hub:::new_ssh_key")
+    stack.add_substack("config0-hub:::github_ssh_upload")
 
     # Initialize Variables in stack
     stack.init_variables()
@@ -62,25 +62,22 @@ def run(stackargs):
     arguments = stack.get_tagged_vars(tag="new_key",
                                       output="dict")
 
-    human_description = 'create ssh key name {}'.format(stack.key_name)
+    human_description = "create ssh key name {}".format(stack.key_name)
+    inputargs = {"arguments": arguments,
+                 "automation_phase": "infrastructure",
+                 "human_description": human_description}
 
-    kwargs = {"arguments":arguments}
-    kwargs["automation_phase"] = "infrastructure"
-    kwargs["human_description"] = human_description
-
-    stack.new_ssh_key.insert(display=True, **kwargs)
+    stack.new_ssh_key.insert(display=True, **inputargs)
 
     # upload ssh key
     arguments = stack.get_tagged_vars(tag="upload_key",
                                       output="dict")
 
-    human_description = 'pubkey {} to {}'.format(stack.key_name,
-                                                 stack.repo)
+    human_description =  "pubkey {} to {}".format(stack.key_name, stack.repo)
+    inputargs = {"arguments": arguments,
+                 "automation_phase": "infrastructure",
+                 "human_description": human_description}
 
-    kwargs = {"arguments": arguments}
-    kwargs["automation_phase"] = "infrastructure"
-    kwargs["human_description"] = human_description
-
-    stack.github_ssh_upload.insert(display=True, **kwargs)
+    stack.github_ssh_upload.insert(display=True, **inputargs)
 
     return stack.get_results()

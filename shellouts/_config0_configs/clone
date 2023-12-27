@@ -149,5 +149,3 @@ def git_clone_repo():
 
 if __name__ == '__main__':
     git_clone_repo()
-
-

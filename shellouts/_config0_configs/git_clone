@@ -3,7 +3,6 @@
 
 import os
 import sys
-#import subprocess
 
 from jiffycommon.loggerly import get_method_logger   
 from jiffycommon.shellouts import run_cmds
@@ -76,7 +75,7 @@ def git_clone_repo(**kwargs):
     cmds = []
 
     ##################################################
-    #No need to clone if the repo exists
+    # No need to clone if the repo exists
     ##################################################
     cmd="cd {} && git status > /dev/null 2>&1".format(repo_dir)
     if os.path.exists(repo_dir) and int(execute_return_exit(cmd)) != 0: 
