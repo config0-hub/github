@@ -44,7 +44,7 @@ def run(stackargs):
                              default="true")
 
     stack.parse.add_optional(key="github_token",
-                             tags="runtime_settings",
+                             tags="tf_runtime",
                              types="str",
                              default="null")
 
@@ -109,18 +109,18 @@ def run(stackargs):
         msg = "public_key/public_key_hash is missing"
         raise Exception(msg)
 
-    # insert the github token in the "runtime_settings"
-    # environment, use the var tag "runtime_settings"
+    # insert the github token in the "tf_runtime"
+    # environment, use the var tag "tf_runtime"
     if stack.inputvars.get("GITHUB_TOKEN"):
         stack.set_variable("github_token",
                            stack.inputvars["GITHUB_TOKEN"],
-                           tags="runtime_settings",
+                           tags="tf_runtime",
                            types="str")
 
     elif stack.inputvars.get("github_token"):
         stack.set_variable("github_token",
                            stack.inputvars["github_token"],
-                           tags="runtime_settings",
+                           tags="tf_runtime",
                            types="str")
 
     if not stack.github_token:
