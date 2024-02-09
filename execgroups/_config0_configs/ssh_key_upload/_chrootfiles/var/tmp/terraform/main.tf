@@ -1,8 +1,9 @@
-provider "github" {}
+provider "github" {
+  token = var.gh_token
+}
 
 # Add a deploy key
 # we have used key_name for title to make it consistent with ssh keys in general
-
 resource "github_repository_deploy_key" "default" {
   title      = var.key_name
   repository = var.repository
