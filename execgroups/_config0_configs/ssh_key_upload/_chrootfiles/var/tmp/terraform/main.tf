@@ -1,5 +1,4 @@
 provider "github" {
-  token = var.gh_token
 }
 
 # Add a deploy key

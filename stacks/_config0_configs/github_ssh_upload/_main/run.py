@@ -126,8 +126,7 @@ def run(stackargs):
     if not stack.github_token:
         raise Exception("cannot retrieve github_token from inputargs")
 
-    ssm_obj = { "GITHUB_TOKEN": stack.github_token,
-                "TF_VAR_gh_token":stack.github_token }
+    ssm_obj = { "GITHUB_TOKEN": stack.github_token }
 
     # use the terraform constructor (helper)
     # but this is optional
