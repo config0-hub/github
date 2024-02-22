@@ -1,5 +1,32 @@
 from config0_publisher.terraform import TFConstructor
 
+def _set_github_token(stack):
+
+    # insert the github token in the "tf_runtime"
+    # environment, use the var tag "tf_runtime"
+    if stack.inputvars.get("GITHUB_TOKEN"):
+        stack.set_variable("github_token",
+                           stack.inputvars["GITHUB_TOKEN"],
+                           tags="tf_runtime",
+                           types="str")
+    elif stack.inputvars.get("github_token"):
+        stack.set_variable("github_token",
+                           stack.inputvars["github_token"],
+                           tags="tf_runtime",
+                           types="str")
+    elif stack.inputvars.get("github_token_hash"):
+        stack.set_variable("github_token",
+                           stack.b64_encode(stack.inputvars["github_token_hash"]),
+                           tags="tf_runtime",
+                           types="str")
+    elif stack.inputvars.get("GITHUB_TOKEN_HASH"):
+        stack.set_variable("github_token",
+                           stack.b64_encode(stack.inputvars["GITHUB_TOKEN_HASH"]),
+                           tags="tf_runtime",
+                           types="str")
+    if not stack.github_token:
+        raise Exception("cannot retrieve github_token from inputargs")
+
 def run(stackargs):
 
     # instantiate authoring stack
@@ -61,24 +88,7 @@ def run(stackargs):
                        tags="tfvar,db",
                        types="str")
 
-    # insert the github token in the "tf_runtime"
-    # environment, use the var tag "tf_runtime"
-    if stack.inputvars.get("GITHUB_TOKEN"):
-        stack.set_variable("github_token",
-                           stack.inputvars["GITHUB_TOKEN"],
-                           tags="tf_runtime",
-                           types="str")
-
-    elif stack.inputvars.get("github_token"):
-        stack.set_variable("github_token",
-                           stack.inputvars["github_token"],
-                           tags="tf_runtime",
-                           types="str")
-
-    if not stack.github_token:
-        raise Exception("cannot retrieve github_token from inputargs")
-
-    ssm_obj = { "GITHUB_TOKEN": stack.github_token }
+    _set_github_token(stack)
 
     # use the terraform constructor (helper)
     # but this is optional
@@ -87,7 +97,7 @@ def run(stackargs):
                        provider="github",
                        resource_name=stack.name,
                        ssm_format=".env",
-                       ssm_obj=ssm_obj,
+                       ssm_obj={"GITHUB_TOKEN": stack.github_token},
                        resource_type="repo_webhook",
                        terraform_type="github_repository_webhook")
 

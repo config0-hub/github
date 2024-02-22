@@ -1,6 +1,5 @@
 from config0_publisher.terraform import TFConstructor
 
-
 def _get_ssh_public_key(stack):
 
     _lookup = {"must_be_one": True,
@@ -8,10 +7,65 @@ def _get_ssh_public_key(stack):
                "provider": "config0",
                "name": stack.key_name}
 
-    results = stack.get_resource(decrypt=True, 
+    results = stack.get_resource(decrypt=True,
                                  **_lookup)[0]
 
     return stack.b64_encode(results["public_key"])
+
+def _set_public_key(stack):
+
+    _publish = None
+
+    # public key expected in base64
+    if not stack.get_attr("public_key_hash"):
+        if not stack.get_attr("public_key") and stack.inputvars.get("public_key"):
+            stack.logger.debug_highlight("public key found in inputvars")
+            stack.set_variable("public_key_hash",
+                               stack.inputvars["public_key"],
+                               tags="tfvar",
+                               types="str")
+            _publish = None
+        elif not stack.get_attr("public_key"):
+            _public_key_hash = _get_ssh_public_key(stack)
+            if _public_key_hash:
+                stack.logger.debug_highlight("public key found in resources table")
+            stack.set_variable("public_key_hash",
+                               _public_key_hash,
+                               tags="tfvar",
+                               types="str")
+            _publish = True
+    if not stack.get_attr("public_key_hash"):
+        msg = "public_key/public_key_hash is missing"
+        raise Exception(msg)
+
+    return _publish
+
+def _set_github_token(stack):
+
+    # insert the github token in the "tf_runtime"
+    # environment, use the var tag "tf_runtime"
+    if stack.inputvars.get("GITHUB_TOKEN"):
+        stack.set_variable("github_token",
+                           stack.inputvars["GITHUB_TOKEN"],
+                           tags="tf_runtime",
+                           types="str")
+    elif stack.inputvars.get("github_token"):
+        stack.set_variable("github_token",
+                           stack.inputvars["github_token"],
+                           tags="tf_runtime",
+                           types="str")
+    elif stack.inputvars.get("github_token_hash"):
+        stack.set_variable("github_token",
+                           stack.b64_encode(stack.inputvars["github_token_hash"]),
+                           tags="tf_runtime",
+                           types="str")
+    elif stack.inputvars.get("GITHUB_TOKEN_HASH"):
+        stack.set_variable("github_token",
+                           stack.b64_encode(stack.inputvars["GITHUB_TOKEN_HASH"]),
+                           tags="tf_runtime",
+                           types="str")
+    if not stack.github_token:
+        raise Exception("cannot retrieve github_token from inputargs")
 
 def run(stackargs):
 
@@ -75,58 +129,8 @@ def run(stackargs):
         msg = "key_name or name variable has to be set"
         raise Exception(msg)
 
-    _publish = None
-
-    # publish key expected to be encoded as base64
-    if not stack.get_attr("public_key_hash"):
-
-        if not stack.get_attr("public_key") and stack.inputvars.get("public_key"):
-
-            stack.logger.debug_highlight("public key found in inputvars")
-
-            stack.set_variable("public_key_hash",
-                               stack.inputvars["public_key"],
-                               tags="tfvar",
-                               types="str")
-
-            _publish = None
-
-        elif not stack.get_attr("public_key"):
-
-            _public_key_hash = _get_ssh_public_key(stack)
-
-            if _public_key_hash:
-                stack.logger.debug_highlight("public key found in resources table")
-
-            stack.set_variable("public_key_hash",
-                               _public_key_hash,
-                               tags="tfvar",
-                               types="str")
-
-            _publish = True
-
-    if not stack.get_attr("public_key_hash"):
-        msg = "public_key/public_key_hash is missing"
-        raise Exception(msg)
-
-    # insert the github token in the "tf_runtime"
-    # environment, use the var tag "tf_runtime"
-    if stack.inputvars.get("GITHUB_TOKEN"):
-        stack.set_variable("github_token",
-                           stack.inputvars["GITHUB_TOKEN"],
-                           tags="tf_runtime",
-                           types="str")
-
-    elif stack.inputvars.get("github_token"):
-        stack.set_variable("github_token",
-                           stack.inputvars["github_token"],
-                           tags="tf_runtime",
-                           types="str")
-
-    if not stack.github_token:
-        raise Exception("cannot retrieve github_token from inputargs")
-
-    ssm_obj = { "GITHUB_TOKEN": stack.github_token }
+    _publish = _set_public_key(stack)
+    _set_github_token(stack)
 
     # use the terraform constructor (helper)
     # but this is optional
@@ -135,7 +139,7 @@ def run(stackargs):
                        provider="github",
                        resource_name=stack.key_name,
                        ssm_format=".env",
-                       ssm_obj=ssm_obj,
+                       ssm_obj={"GITHUB_TOKEN": stack.github_token},
                        resource_type="repo_deploy_key",
                        terraform_type="github_repository_deploy_key")
 
