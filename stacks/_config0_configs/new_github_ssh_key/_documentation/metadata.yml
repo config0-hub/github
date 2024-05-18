@@ -1,0 +1,12 @@
+desc: The stack generates ssh_key and uploads it to github.
+release: 0.0.1
+categories: 
+   - ssh_key
+   - repository
+   - code_repo
+tags:
+   - aws
+   - ssh_key
+   - host
+   - github
+   - infrastructure

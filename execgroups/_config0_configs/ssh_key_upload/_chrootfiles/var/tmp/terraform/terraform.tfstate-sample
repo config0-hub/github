@@ -1,0 +1,31 @@
+{
+  "version": 4,
+  "terraform_version": "0.14.6",
+  "serial": 1,
+  "lineage": "cc6f1d15-2bd9-bae0-e37c-18c88cecbc8e",
+  "outputs": {},
+  "resources": [
+    {
+      "mode": "managed",
+      "type": "github_repository_deploy_key",
+      "name": "default",
+      "provider": "provider[\"registry.terraform.io/hashicorp/github\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "etag": "W/\"328ed6a10d5d622c119ccd89f3b46a24020704509efd43327f05ccc1698b04f1\"",
+            "id": "config0-private-test:63662988",
+            "key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCyZosfeW8PVOcFhQNgEnklRaA3IvLqmRwYHXzE4lpWEA+nPhqwS6JmDMxrqj8SxqNCruYJAwVkTN12wvEc6F3G81wGVv4W+AxHbSfvcgHVzmmM3D/D1F7pX/AZEpZUMlOI4M9mA7EXIpWOoBElttyWOZ8IJ81YUiwt2OBYhVPjd75KXAi18S2AZEj9lfANstbQ8XyjWmVXGYgCQDs5ygHEJggUnPQTqId8aCttrtbzGyDBTP2fjvYfpcx+IW3+ZPYQI+Rn/LK131sA8lXzD10KJn8vEJVt17eHwrn7mVa4NWf8RhASZSxoxQoyTtZpi+Yo4VNahW3oS8ny9+rJ1ra/JBFf7ExaCWEPK5PanIsYcnhrrpBnov+dA1lsnq0RmhOZEVXWJ7lcMkK1g4JwiwI4s3FugU2RJIXIqdraTcqp0MMaYQ4jLg4PjUV/gujFJ/BrkqzBHd9cEzC5MV6S6d8sxjx2kxyhbHi9f1qjM4TNBo9Od7BaPkDPyvdJyud4MtrhWOzek4UnvUhRH4+3ttujcXKP5CxxTv2zgkHMpRvOGyRLlFzirJN6BGM63ARyLOvlVbb6o/EoKZ+C2izgN0hKqBLbj9rwVomCQ/MijFJjAwUv+QsdAemZ0MZ7qeuSJcEomtK+aNPF6zTyxMAusXcukT/QHQ8wmd7eq/hLBXh4ew==",
+            "read_only": true,
+            "repository": "config0-private-test",
+            "title": "config0-private-test"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    }
+  ]
+}
+
