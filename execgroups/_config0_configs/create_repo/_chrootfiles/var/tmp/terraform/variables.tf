@@ -1,4 +1,4 @@
-variable "repository" { default = "config0-private-test" }
+variable "repository" { default = "private-test" }
 variable "visibility" { default = "private" }
 variable "has_issues" { default = true }
 variable "has_projects" { default = false }

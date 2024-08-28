@@ -2,7 +2,7 @@ provider "github" {}
 
 resource "github_repository" "default" {
   name        = var.repository
-  description = "This is a repo {var.repository} created using Terraform"
+  description = "This is a repo ${var.repository} created using Terraform"
 
   visibility = var.visibility
   auto_init  = true
