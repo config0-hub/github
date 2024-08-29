@@ -7,9 +7,9 @@ resource "github_repository" "default" {
   visibility = var.visibility
   auto_init  = true
 
-  has_issues = var.has_issues
-  has_projects = var.has_projects
-  has_wiki = var.has_wiki
+  has_issues             = var.has_issues
+  has_projects           = var.has_projects
+  has_wiki               = var.has_wiki
   delete_branch_on_merge = var.delete_branch_on_merge
 
 }
@@ -19,7 +19,7 @@ resource "github_branch" "default" {
   branch     = var.default_branch
 }
 
-resource "github_branch_default" "default"{
+resource "github_branch_default" "default" {
   repository = github_repository.default.name
   branch     = github_branch.default.branch
 }
