@@ -2,31 +2,14 @@ from config0_publisher.terraform import TFConstructor
 
 def _set_github_token(stack):
 
-    # insert the github token in the "tf_exec_env"
-    # environment, use the var tag "tf_exec_env"
-    if stack.github_token:
-        stack.logger.debug('github_token explicity set through stack argument')
-        return
-
-    if stack.inputvars.get("GITHUB_TOKEN"):
-        stack.set_variable("github_token",
-                           stack.inputvars["GITHUB_TOKEN"],
-                           tags="tf_exec_env",
-                           types="str")
-
-    elif stack.inputvars.get("github_token"):
+    if stack.inputvars.get("github_token"):
         stack.set_variable("github_token",
                            stack.inputvars["github_token"],
                            tags="tf_exec_env",
                            types="str")
     elif stack.inputvars.get("github_token_hash"):
         stack.set_variable("github_token",
-                           stack.b64_decode(stack.inputvars["github_token_hash"]),
-                           tags="tf_exec_env",
-                           types="str")
-    elif stack.inputvars.get("GITHUB_TOKEN_HASH"):
-        stack.set_variable("github_token",
-                           stack.b64_decode(stack.inputvars["GITHUB_TOKEN_HASH"]),
+                           stack.b64_encode(stack.inputvars["github_token_hash"]),
                            tags="tf_exec_env",
                            types="str")
 
@@ -74,11 +57,6 @@ def run(stackargs):
                              types="str",
                              default="main")
 
-    stack.parse.add_optional(key="github_token",
-                             tags="tf_exec_env",
-                             types="str",
-                             default="null")
-
     # Add execgroup
     stack.add_execgroup("config0-publish:::github::create_repo",
                         "tf_execgroup")
@@ -110,12 +88,6 @@ def run(stackargs):
                      "name",
                      "ssh_clone_url",
                      "visibility"])
-
-    # publish the info
-    if _publish:
-        tf.output(keys=["git_clone_url",
-                        "http_clone_url",
-                        "ssh_clone_url"])
 
     # finalize the tf_executor
     stack.tf_executor.insert(display=True,

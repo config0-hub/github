@@ -2,14 +2,7 @@ from config0_publisher.terraform import TFConstructor
 
 def _set_github_token(stack):
 
-    # insert the github token in the "tf_exec_env"
-    # environment, use the var tag "tf_exec_env"
-    if stack.inputvars.get("GITHUB_TOKEN"):
-        stack.set_variable("github_token",
-                           stack.inputvars["GITHUB_TOKEN"],
-                           tags="tf_exec_env",
-                           types="str")
-    elif stack.inputvars.get("github_token"):
+    if stack.inputvars.get("github_token"):
         stack.set_variable("github_token",
                            stack.inputvars["github_token"],
                            tags="tf_exec_env",
@@ -19,11 +12,7 @@ def _set_github_token(stack):
                            stack.b64_encode(stack.inputvars["github_token_hash"]),
                            tags="tf_exec_env",
                            types="str")
-    elif stack.inputvars.get("GITHUB_TOKEN_HASH"):
-        stack.set_variable("github_token",
-                           stack.b64_encode(stack.inputvars["GITHUB_TOKEN_HASH"]),
-                           tags="tf_exec_env",
-                           types="str")
+
     if not stack.github_token:
         raise Exception("cannot retrieve github_token from inputargs")
 
@@ -65,11 +54,6 @@ def run(stackargs):
                              tags="tfvar",
                              types="str",
                              default='push,pull_request')
-
-    stack.parse.add_optional(key="github_token",
-                             tags="tf_exec_env",
-                             types="str",
-                             default="null")
 
     # Add execgroup
     stack.add_execgroup("config0-publish:::github::add_webhook",

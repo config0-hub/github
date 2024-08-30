@@ -1,6 +1,6 @@
 **Description**
 
-  - The GITHUB_TOKEN needs to be injected by the Config0 platform as an inputvars
+  - The github_token/github_token_hash needs to be injected by the Config0 platform as an inputvars
 
   - The stack uploads ssh public key to github.
   - The stack requires name or key_name of the public key
