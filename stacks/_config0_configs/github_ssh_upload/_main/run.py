@@ -47,6 +47,11 @@ def _set_github_token(stack):
                            stack.inputvars["github_token"],
                            tags="tf_exec_env",
                            types="str")
+    elif stack.inputvars.get("GITHUB_TOKEN"):
+        stack.set_variable("github_token",
+                           stack.inputvars["GITHUB_TOKEN"],
+                           tags="tf_exec_env",
+                           types="str")
     elif stack.inputvars.get("github_token_hash"):
         stack.set_variable("github_token",
                            stack.b64_encode(stack.inputvars["github_token_hash"]),
