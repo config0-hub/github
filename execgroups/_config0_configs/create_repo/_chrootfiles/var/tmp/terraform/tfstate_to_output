@@ -1,0 +1,30 @@
+#!/usr/bin/env python
+
+import os
+import json
+#from config0_publisher.resource.manage import to_jsonfile
+#from config0_publisher.utilities import print_json
+#from config0_publisher.serialization import b64_encode
+
+terraform_state_file = os.environ.get("TERRAFORM_STATE_FILE","terraform.tfstate")
+
+with open(terraform_state_file) as json_file:
+    data = json.load(json_file)
+
+if not data:
+    print("ERROR - there is no data from {}".format(os.path.join(os.getcwd(),terraform_state_file)))
+    exit(9)
+
+results = {}
+results["resource_type"] = "github_repository"
+results["provider"] = "github"
+results["main"] = True
+results["default_branch"] = data["resources"][0]["instances"][0]["attributes"]["default_branch"]
+results["git_clone_url"] = data["resources"][0]["instances"][0]["attributes"]["git_clone_url"]
+results["http_clone_url"] = data["resources"][0]["instances"][0]["attributes"]["http_clone_url"]
+results["name"] = data["resources"][0]["instances"][0]["attributes"]["name"]
+results["ssh_clone_url"] = data["resources"][0]["instances"][0]["attributes"]["ssh_clone_url"]
+results["visibility"] = data["resources"][0]["instances"][0]["attributes"]["visibility"]
+
+
+print(results)
