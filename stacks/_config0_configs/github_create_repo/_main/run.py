@@ -84,8 +84,7 @@ def run(stackargs):
                        resource_name=stack.repository,
                        ssm_format=".env",
                        ssm_obj={"GITHUB_TOKEN": stack.github_token},
-                       resource_type="repository",
-                       terraform_type="github_repository")
+                       resource_type="repository")
 
     tf.include(keys=["default_branch",
                      "git_clone_url",

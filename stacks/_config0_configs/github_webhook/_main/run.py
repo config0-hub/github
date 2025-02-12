@@ -87,8 +87,7 @@ def run(stackargs):
                        resource_name=stack.name,
                        ssm_format=".env",
                        ssm_obj={"GITHUB_TOKEN": stack.github_token},
-                       resource_type="repo_webhook",
-                       terraform_type="github_repository_webhook")
+                       resource_type="repo_webhook")
 
     tf.include(keys=["id",
                      "etag",

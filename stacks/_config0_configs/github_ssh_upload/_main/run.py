@@ -129,8 +129,7 @@ def run(stackargs):
                        resource_name=stack.key_name,
                        ssm_format=".env",
                        ssm_obj={"GITHUB_TOKEN": stack.github_token},
-                       resource_type="repo_deploy_key",
-                       terraform_type="github_repository_deploy_key")
+                       resource_type="repo_deploy_key")
 
     tf.include(keys=["id",
                      "etag",
