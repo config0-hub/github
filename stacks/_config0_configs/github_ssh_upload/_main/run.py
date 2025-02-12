@@ -131,20 +131,13 @@ def run(stackargs):
                        ssm_obj={"GITHUB_TOKEN": stack.github_token},
                        resource_type="repo_deploy_key")
 
-    tf.include(keys=["id",
-                     "etag",
-                     "repository",
-                     "read_only"])
-
     tf.include(maps={"key_name": "title"})
 
     # publish the info
     if _publish:
-        tf.output(keys=["id",
-                        "etag",
+        tf.output(keys=["etag",
                         "repository",
-                        "key_name",
-                        "resource_type"])
+                        "key_name"])
 
     # finalize the tf_executor
     stack.tf_executor.insert(display=True,

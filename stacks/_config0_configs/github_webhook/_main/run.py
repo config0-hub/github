@@ -89,22 +89,12 @@ def run(stackargs):
                        ssm_obj={"GITHUB_TOKEN": stack.github_token},
                        resource_type="repo_webhook")
 
-    tf.include(keys=["id",
-                     "etag",
-                     "repository",
-                     "url",
-                     "events",
-                     "secret"])
-
     tf.include(maps={"webhook_url": "url"})
 
-    tf.output(keys=["id",
-                    "etag",
+    tf.output(keys=["etag",
                     "events",
                     "url",
-                    "name",
-                    "repository",
-                    "resource_type"])
+                    "repository"])
 
     # finalize the tf_executor
     stack.tf_executor.insert(display=True,
