@@ -30,6 +30,7 @@ output "events" {
 
 output "url" {
   value = github_repository_webhook.default.configuration[0].url
+  sensitive = true
 }
 
 output "repository" {
