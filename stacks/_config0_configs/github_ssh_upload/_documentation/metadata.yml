@@ -1,0 +1,15 @@
+desc: Uploads SSH public keys to GitHub repositories as deploy keys with configurable access permissions.
+release: 0.0.1
+author: Gary Leong <gary@config0.com>
+license: GNU General Public License v3.0
+categories: 
+   - github
+   - ssh_key
+   - repository
+   - code_repo
+tags:
+   - ssh_key
+   - ssh_public_key
+   - public_key
+   - host
+   - github
