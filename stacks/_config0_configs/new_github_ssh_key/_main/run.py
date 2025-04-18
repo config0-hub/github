@@ -20,6 +20,7 @@ def run(stackargs):
     # instantiate authoring stack
     stack = newStack(stackargs)
 
+    # Required parameters
     stack.parse.add_required(key="repo",
                              tags="upload_key",
                              types="str")
@@ -29,7 +30,7 @@ def run(stackargs):
                              types="str",
                              default="_random")
 
-    # Add default variables
+    # Optional parameters
     stack.parse.add_optional(key="name",
                              default='null')
 
@@ -62,7 +63,7 @@ def run(stackargs):
                              types="str",
                              default="null")
 
-    # declare execution groups
+    # Declare execution groups
     stack.add_substack("config0-publish:::new_ssh_key")
     stack.add_substack("config0-publish:::github_ssh_upload")
 
@@ -70,6 +71,7 @@ def run(stackargs):
     stack.init_variables()
     stack.init_substacks()
 
+    # Set key_name if not provided but name is available
     if not stack.get_attr("key_name") and stack.get_attr("name"):
         stack.set_variable("key_name",
                            stack.key_name,
@@ -80,7 +82,7 @@ def run(stackargs):
         msg = "key_name or name variable has to be set"
         raise Exception(msg)
 
-    # new ssh key
+    # Create new SSH key
     arguments = stack.get_tagged_vars(tag="new_key",
                                       output="dict")
 
@@ -91,7 +93,7 @@ def run(stackargs):
 
     stack.new_ssh_key.insert(display=True, **inputargs)
 
-    # upload ssh key
+    # Upload SSH key to GitHub
     arguments = stack.get_tagged_vars(tag="upload_key",
                                       output="dict")
 

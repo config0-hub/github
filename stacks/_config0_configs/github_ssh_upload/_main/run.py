@@ -19,20 +19,18 @@ from config0_publisher.terraform import TFConstructor
 
 
 def _get_ssh_public_key(stack):
+    _lookup = {
+        "must_be_one": True,
+        "resource_type": "ssh_key_pair",
+        "provider": "config0",
+        "name": stack.key_name
+    }
 
-    _lookup = {"must_be_one": True,
-               "resource_type": "ssh_key_pair",
-               "provider": "config0",
-               "name": stack.key_name}
-
-    results = stack.get_resource(decrypt=True,
-                                 **_lookup)[0]
-
+    results = stack.get_resource(decrypt=True, **_lookup)[0]
     return stack.b64_encode(results["public_key"])
 
 
 def _set_public_key(stack):
-
     _publish = None
 
     # public key expected in base64
@@ -61,7 +59,6 @@ def _set_public_key(stack):
 
 
 def _set_github_token(stack):
-
     if stack.inputvars.get("github_token"):
         stack.set_variable("github_token",
                            stack.inputvars["github_token"],
@@ -83,7 +80,6 @@ def _set_github_token(stack):
 
 
 def run(stackargs):
-
     # instantiate authoring stack
     stack = newStack(stackargs)
 
@@ -143,7 +139,6 @@ def run(stackargs):
     _set_github_token(stack)
 
     # use the terraform constructor (helper)
-    # but this is optional
     tf = TFConstructor(stack=stack,
                        execgroup_name=stack.tf_execgroup.name,
                        provider="github",
@@ -156,12 +151,9 @@ def run(stackargs):
 
     # publish the info
     if _publish:
-        tf.output(keys=["etag",
-                        "repository",
-                        "key_name"])
+        tf.output(keys=["etag", "repository", "key_name"])
 
     # finalize the tf_executor
-    stack.tf_executor.insert(display=True,
-                             **tf.get())
+    stack.tf_executor.insert(display=True, **tf.get())
 
     return stack.get_results()

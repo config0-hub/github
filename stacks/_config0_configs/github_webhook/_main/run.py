@@ -99,7 +99,6 @@ def run(stackargs):
     _set_github_token(stack)
 
     # use the terraform constructor (helper)
-    # but this is optional
     tf = TFConstructor(stack=stack,
                        execgroup_name=stack.tf_execgroup.name,
                        provider="github",
