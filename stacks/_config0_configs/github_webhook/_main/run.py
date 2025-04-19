@@ -41,15 +41,7 @@ def _set_github_token(stack):
 
 
 def run(stackargs):
-    """
-    Create a GitHub webhook using Terraform.
-    
-    Args:
-        stackargs: Arguments for stack configuration
-        
-    Returns:
-        Stack results
-    """
+
     # instantiate authoring stack
     stack = newStack(stackargs)
 
