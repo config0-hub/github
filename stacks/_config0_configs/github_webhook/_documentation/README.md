@@ -8,9 +8,9 @@ This stack creates a GitHub webhook for a repository. It allows you to set up au
 ### Required
 | Name | Description | Default |
 |------|-------------|---------|
-| name | Configuration for name | |
-| url | Webhook destination URL | |
-| repo | Configuration for repo | |
+| name | Configuration for name | &nbsp; |
+| url | Webhook destination URL | &nbsp; |
+| repo | Configuration for repo | &nbsp; |
 | secret | Configuration for secret | _random |
 
 ### Optional
@@ -21,23 +21,22 @@ This stack creates a GitHub webhook for a repository. It allows you to set up au
 | content_type | Configuration for content type | json |
 | events | Events that trigger the webhook | push,pull_request |
 
-## Features
-- Creates a GitHub repository webhook with customizable events and settings
-- Supports configurable secret for webhook security
-- Allows specifying webhook content type and event triggers
-- Supports enabling/disabling the webhook
-
 ## Dependencies
 
 ### Substacks
-- [config0-publish:::tf_executor](https://api-app.config0.com/web_api/v1.0/stacks/config0-publish/tf_executor)
+- [config0-publish:::tf_executor](http://config0.http.redirects.s3-website-us-east-1.amazonaws.com/assets/stacks/config0-publish/tf_executor/default)
 
 ### Execgroups
-- [config0-publish:::github::add_webhook](https://api-app.config0.com/web_api/v1.0/exec/groups/config0-publish/github/add_webhook)
+- [config0-publish:::github::add_webhook](http://config0.http.redirects.s3-website-us-east-1.amazonaws.com/assets/exec/groups/config0-publish/github/add_webhook/default)
+
+### Shelloutconfigs
+- [config0-publish:::terraform::resource_wrapper](http://config0.http.redirects.s3-website-us-east-1.amazonaws.com/assets/shelloutconfigs/config0-publish/terraform/resource_wrapper/default)
 
 ## License
+<pre>
 Copyright (C) 2025 Gary Leong <gary@config0.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, version 3 of the License.
+</pre>

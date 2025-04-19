@@ -19,7 +19,7 @@ from config0_publisher.terraform import TFConstructor
 
 
 def _set_github_token(stack):
-
+    """Set GitHub token from available input variables."""
     if stack.inputvars.get("github_token"):
         stack.set_variable("github_token",
                            stack.inputvars["github_token"],
@@ -41,13 +41,21 @@ def _set_github_token(stack):
 
 
 def run(stackargs):
-
+    """
+    Create a GitHub webhook using Terraform.
+    
+    Args:
+        stackargs: Arguments for stack configuration
+        
+    Returns:
+        Stack results
+    """
     # instantiate authoring stack
     stack = newStack(stackargs)
 
     # Add default variables
     stack.parse.add_required(key="name")
-
+    
     stack.parse.add_required(key="url",
                              tags="tfvar",
                              types="str")

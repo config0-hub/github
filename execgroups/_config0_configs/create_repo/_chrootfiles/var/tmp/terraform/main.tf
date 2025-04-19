@@ -1,5 +1,3 @@
-provider "github" {}
-
 resource "github_repository" "default" {
   name        = var.repository
   description = "This is a repo ${var.repository} created using Terraform"
@@ -11,7 +9,6 @@ resource "github_repository" "default" {
   has_projects           = var.has_projects
   has_wiki               = var.has_wiki
   delete_branch_on_merge = var.delete_branch_on_merge
-
 }
 
 resource "github_branch" "default" {
@@ -24,10 +21,12 @@ resource "github_branch_default" "default" {
   branch     = github_branch.default.branch
 }
 
-# the below requires github pro/enterprise
-#resource "github_branch_protection" "default" {
-#  repository_id = github_repository.default.node_id
-#  pattern          = var.default_branch
-#  allows_deletions = true
-#
-#}
+/*
+#The below requires GitHub Pro/Enterprise
+#Uncomment if you have the appropriate GitHub plan
+resource "github_branch_protection" "default" {
+repository_id    = github_repository.default.node_id
+pattern          = var.default_branch
+allows_deletions = true
+*/
+
