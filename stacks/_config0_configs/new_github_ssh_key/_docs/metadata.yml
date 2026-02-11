@@ -1,0 +1,14 @@
+desc: Creates SSH key and uploads it to GitHub repository for secure access.
+release: 0.0.1
+author: Gary Leong <gary@config0.com>
+license: GNU General Public License v3.0
+categories: 
+   - ssh_key
+   - repository
+   - code_repo
+tags:
+   - aws
+   - ssh_key
+   - host
+   - github
+   - infrastructure
