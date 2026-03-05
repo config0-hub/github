@@ -28,13 +28,13 @@ This stack creates a new SSH key and uploads it to a specified GitHub repository
 ## Dependencies
 
 ### Substacks
-- [config0-publish:::new_ssh_key](https://api-app.config0.com/web_api/v1.0/stacks/config0-publish/new_ssh_key)
-- [config0-publish:::github_ssh_upload](https://api-app.config0.com/web_api/v1.0/stacks/config0-publish/github_ssh_upload)
+- [config0-hub:::config0_core::new_ssh_key](https://api-app.config0.com/web_api/v1.0/stacks/config0-hub/new_ssh_key)
+- [config0-hub:::github::github_ssh_upload](https://api-app.config0.com/web_api/v1.0/stacks/config0-hub/github_ssh_upload)
 
 ### Execgroups
 None
 
-### Shelloutconfigs
+### Scripts
 None
 
 ## License

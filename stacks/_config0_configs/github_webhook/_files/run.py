@@ -80,11 +80,11 @@ def run(stackargs):
                              default='push,pull_request')
 
     # Add execgroup
-    stack.add_execgroup("config0-publish:::github::add_webhook",
+    stack.add_execgroup("config0-hub:::github::add_webhook",
                         "tf_execgroup")
 
     # Add substack
-    stack.add_substack("config0-publish:::tf_executor")
+    stack.add_substack("config0-hub:::config0_core::tf_executor")
 
     # Initialize Variables in stack
     stack.init_variables()
