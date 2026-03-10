@@ -1,13 +1,11 @@
 desc: Creates a GitHub webhook to send notifications from a repository to a specified URL.
-release: 0.0.1
+release: 0.3.0
 author: Gary Leong <gary@config0.com>
-license: GNU General Public License v3
-categories: 
-   - github
-   - webhook
-   - repository
-   - code_repo
+license: GPL-3.0
+categories:
+   - cicd
+   - ssh
+   - infrastructure
 tags:
    - webhook
-   - host
    - github
