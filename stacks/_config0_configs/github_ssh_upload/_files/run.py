@@ -26,8 +26,8 @@ def _get_ssh_public_key(stack):
         "name": stack.key_name
     }
 
-    results = stack.get_resource(decrypt=True, **_lookup)[0]
-    return stack.b64_encode(results["public_key"])
+    results = stack.get_resource(**_lookup)[0]
+    return stack.serialize(results["public_key"], json=False)
 
 
 def _set_public_key(stack):
@@ -36,7 +36,7 @@ def _set_public_key(stack):
     # public key expected in base64
     if not stack.get_attr("public_key_hash"):
         if not stack.get_attr("public_key") and stack.inputvars.get("public_key"):
-            stack.logger.debug("public key found in inputvars")
+            stack.logger.debug_highlight("public key found in inputvars")
             stack.set_variable("public_key_hash",
                                stack.inputvars["public_key"],
                                tags="tfvar",
@@ -45,7 +45,7 @@ def _set_public_key(stack):
         elif not stack.get_attr("public_key"):
             _public_key_hash = _get_ssh_public_key(stack)
             if _public_key_hash:
-                stack.logger.debug("public key found in resources table")
+                stack.logger.debug_highlight("public key found in resources table")
             stack.set_variable("public_key_hash",
                                _public_key_hash,
                                tags="tfvar",
@@ -71,7 +71,7 @@ def _set_github_token(stack):
                            types="str")
     elif stack.inputvars.get("github_token_hash"):
         stack.set_variable("github_token",
-                           stack.b64_encode(stack.inputvars["github_token_hash"]),
+                           stack.serialize(stack.inputvars["github_token_hash"], json=False),
                            tags="tf_exec_env",
                            types="str")
 

@@ -32,7 +32,7 @@ def _set_github_token(stack):
                            types="str")
     elif stack.inputvars.get("github_token_hash"):
         stack.set_variable("github_token",
-                           stack.b64_encode(stack.inputvars["github_token_hash"]),
+                           stack.serialize(stack.inputvars["github_token_hash"], json=False),
                            tags="tf_exec_env",
                            types="str")
 
@@ -47,7 +47,7 @@ def run(stackargs):
 
     # Add default variables
     stack.parse.add_required(key="name")
-    
+
     stack.parse.add_required(key="url",
                              tags="tfvar",
                              types="str")
