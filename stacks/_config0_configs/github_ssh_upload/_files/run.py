@@ -15,15 +15,20 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
+import os
+
 from config0_publisher.terraform import TFConstructor
 
 
 def _get_ssh_public_key(stack):
+    # The ssh_key_pair row the aws ssh_key_pair execgroup recorded in this
+    # run's AWS account (new_github_ssh_key makes it before this stack runs).
     _lookup = {
         "must_be_one": True,
         "resource_type": "ssh_key_pair",
-        "provider": "config0",
-        "name": stack.key_name
+        "provider": "aws",
+        "name": stack.key_name,
+        "match": {"aws_account_id": os.environ["TARGET_AWS_ACCOUNT"]}
     }
 
     results = stack.get_resource(**_lookup)[0]
@@ -35,14 +40,20 @@ def _set_public_key(stack):
 
     # public key expected in base64
     if not stack.get_attr("public_key_hash"):
-        if not stack.get_attr("public_key") and stack.inputvars.get("public_key"):
+        if stack.get_attr("public_key"):
+            # A literal public_key is the key's text; the execgroup takes base64.
+            stack.set_variable("public_key_hash",
+                               stack.serialize(stack.public_key, json=False),
+                               tags="tfvar",
+                               types="str")
+        elif stack.inputvars.get("public_key"):
             stack.logger.debug("public key found in inputvars")
             stack.set_variable("public_key_hash",
                                stack.inputvars["public_key"],
                                tags="tfvar",
                                types="str")
             _publish = None
-        elif not stack.get_attr("public_key"):
+        else:
             _public_key_hash = _get_ssh_public_key(stack)
             if _public_key_hash:
                 stack.logger.debug("public key found in resources table")

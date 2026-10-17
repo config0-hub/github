@@ -2,7 +2,7 @@
 
 ## Description
 
-This stack creates a new SSH key and uploads it to a specified GitHub repository. It handles the generation of the SSH key pair and automatic configuration of the key in the GitHub repository for secure access.
+This stack creates a new SSH key pair and uploads its public half to a GitHub repository as a read-only deploy key. EC2 generates the key pair in the `aws_default_region` of your AWS account and keeps the private half in SSM Parameter Store at `/ec2/keypair/<key_pair_id>`. The `ssh_key_pair` resource records `key_name`, `key_pair_id`, `public_key` and `private_key_ssm_path`, the name of that parameter. No Config0 state or record holds the private half. Removing the stack deletes the key pair, and AWS deletes the parameter with it.
 
 ## Variables
 
@@ -11,31 +11,27 @@ This stack creates a new SSH key and uploads it to a specified GitHub repository
 | Name | Description | Default |
 |------|-------------|---------|
 | repo | GitHub repository for SSH key upload | &nbsp; |
-| stateful_id | Stateful ID for storing the resource code/state | _random |
 
 ### Optional Variables
 
 | Name | Description | Default |
 |------|-------------|---------|
 | name | Alternative name configuration | null |
-| key_name | SSH key identifier for resource access | null |
-| schedule_id | ID of schedule associated with a stack/workflow | null |
-| run_id | ID of a run for the instance of a stack/workflow | null |
-| job_instance_id | ID of a job instance of a job in a schedule | null |
-| job_id | ID of job in a schedule | null |
+| key_name | SSH key identifier for resource access. Also the EC2 key pair name, unique per account and region | null |
+| aws_default_region | AWS region of the key pair and of its SSM parameter | ap-northeast-1 |
 | github_token | GitHub authentication token for repository access | null |
 
 ## Dependencies
 
 ### Substacks
-- [config0-hub:::config0_core::new_ssh_key](https://api-app.config0.com/web_api/v1.0/stacks/config0-hub/new_ssh_key)
+- [config0-hub:::config0_core::tf_executor](http://config0.http.redirects.s3-website-us-east-1.amazonaws.com/assets/stacks/config0-hub/tf_executor/default)
 - [config0-hub:::github::github_ssh_upload](https://api-app.config0.com/web_api/v1.0/stacks/config0-hub/github_ssh_upload)
 
 ### Execgroups
-None
+- [config0-hub:::aws::ssh_key_pair](http://config0.http.redirects.s3-website-us-east-1.amazonaws.com/assets/exec/groups/config0-hub/aws/ssh_key_pair/default)
 
 ### Scripts
-None
+- [config0-hub:::terraform::resource_wrapper](http://config0.http.redirects.s3-website-us-east-1.amazonaws.com/assets/scripts/config0-hub/terraform/resource_wrapper/default)
 
 ## License
 <pre>
