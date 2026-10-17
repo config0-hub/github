@@ -36,7 +36,7 @@ def _set_public_key(stack):
     # public key expected in base64
     if not stack.get_attr("public_key_hash"):
         if not stack.get_attr("public_key") and stack.inputvars.get("public_key"):
-            stack.logger.debug_highlight("public key found in inputvars")
+            stack.logger.debug("public key found in inputvars")
             stack.set_variable("public_key_hash",
                                stack.inputvars["public_key"],
                                tags="tfvar",
@@ -45,7 +45,7 @@ def _set_public_key(stack):
         elif not stack.get_attr("public_key"):
             _public_key_hash = _get_ssh_public_key(stack)
             if _public_key_hash:
-                stack.logger.debug_highlight("public key found in resources table")
+                stack.logger.debug("public key found in resources table")
             stack.set_variable("public_key_hash",
                                _public_key_hash,
                                tags="tfvar",
